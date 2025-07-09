@@ -8,39 +8,51 @@ import com.uca.parcialfinalncapas.exceptions.UserNotFoundException;
 import com.uca.parcialfinalncapas.repository.UserRepository;
 import com.uca.parcialfinalncapas.service.UserService;
 import com.uca.parcialfinalncapas.utils.mappers.UserMapper;
-import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy; // Importación correcta para @Lazy
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserResponse findByCorreo(String correo) {
-        return UserMapper.toDTO(userRepository.findByCorreo(correo)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con correo: " + correo)));
+        User user = userRepository.findByCorreo(correo)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con correo: " + correo));
+        return UserMapper.toDTO(user);
     }
 
     @Override
-    public UserResponse save(UserCreateRequest user) {
-
-        if (userRepository.findByCorreo(user.getCorreo()).isPresent()) {
-            throw new UserNotFoundException("Ya existe un usuario con el correo: " + user.getCorreo());
+    public UserResponse save(UserCreateRequest userRequest) {
+        if (userRepository.findByCorreo(userRequest.getCorreo()).isPresent()) {
+            throw new UserNotFoundException("Ya existe un usuario con el correo: " + userRequest.getCorreo());
         }
-
-        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityCreate(user)));
+        User user = UserMapper.toEntityCreate(userRequest);
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        return UserMapper.toDTO(userRepository.save(user));
     }
 
     @Override
-    public UserResponse update(UserUpdateRequest user) {
-        if (userRepository.findById(user.getId()).isEmpty()) {
-            throw new UserNotFoundException("No se encontró un usuario con el ID: " + user.getId());
-        }
+    public UserResponse update(UserUpdateRequest userUpdate) {
+        User existingUser = userRepository.findById(userUpdate.getId())
+                .orElseThrow(() -> new UserNotFoundException("No se encontró un usuario con el ID: " + userUpdate.getId()));
 
-        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityUpdate(user)));
+        existingUser.setNombre(userUpdate.getNombre());
+        existingUser.setNombreRol(userUpdate.getNombreRol());
+        
+        if (userUpdate.getPassword() != null && !userUpdate.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
+        }
+        return UserMapper.toDTO(userRepository.save(existingUser));
     }
 
     @Override
