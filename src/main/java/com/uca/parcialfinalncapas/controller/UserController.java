@@ -22,7 +22,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('TECH')") 
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> getAllUsers() {
         List<UserResponse> users = userService.findAll();
         return ResponseBuilderUtil.buildResponse(
