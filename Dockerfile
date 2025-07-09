@@ -1,5 +1,5 @@
-# Usa JDK 17 slim
-FROM eclipse-temurin:17-jdk-alpine
+# Usa JDK 21 slim
+FROM eclipse-temurin:21-jdk-alpine
 
 # Directorio de trabajo
 WORKDIR /app
