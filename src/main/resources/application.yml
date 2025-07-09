@@ -7,3 +7,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+app:
+  jwt-secret: "2BhdghSvui8AH2ZA9y64GUNmi5M/WiOyMDe5ZFVlrEZS4g9gWiC5XSiXs1181mJ+MkF0HawYfokcdsw6VFGoaA=="
+  jwt-expiration-milliseconds: 86400000
