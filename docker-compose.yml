@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: parcialuser
       POSTGRES_PASSWORD: parcialpassword
     ports:
-      - "5432:5432"
+      - "5433:5432" #Cambiado para evitar conflicto local
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
