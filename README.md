@@ -65,3 +65,54 @@ _Si van a crear mas endpoints como el login o registrarse recuerden actualizar p
 - [ ] Probar todos los flujos con Postman/Insomnia/Bruno.
 - [ ] Mostrar que los roles se comportan correctamente.
 - [ ] Incluir usuarios de prueba (`user`, `tech`) y contraseñas.
+
+
+# Sistema de Soporte Técnico – Proyecto N-Capas
+
+Simula un sistema donde los usuarios pueden crear solicitudes de soporte (tickets) y los técnicos pueden gestionarlas.
+
+Este proyecto está **contenarizado con Docker**, utilizando **PostgreSQL y Spring Boot** de forma integrada para facilitar pruebas y despliegue.
+
+---
+
+## 🚀 Como se contenerizó el proyecto:
+
+## ⚙️ Estructura principal del proyecto
+
+* `Dockerfile` → Conteneriza la aplicación Spring Boot.
+* `docker-compose.yml` → Orquesta PostgreSQL y la app.
+* `src/main/resources/application.yml` → Configuración con variables de entorno para conexión a PostgreSQL.
+
+---
+
+## ⚙️ Levantar el proyecto con Docker
+
+1️⃣ Compilar el proyecto (opcional si quieres un build limpio):
+
+```bash
+./mvnw clean package -DskipTests
+```
+
+2️⃣ Levantar la aplicación y la base de datos:
+
+```bash
+docker compose up --build
+```
+
+✅ Esto:
+
+* Levantará **PostgreSQL en el puerto `5433` local**.
+* Levantará **Spring Boot en el puerto `8080` local**.
+
+---
+
+## ⚙️ Verificar contenedores en ejecución
+
+```bash
+docker ps
+```
+
+Debes ver:
+
+* `parcial_postgres` → PostgreSQL.
+* `parcial_app` → Aplicación Spring Boot.
