@@ -1,12 +1,12 @@
 package com.uca.parcialfinalncapas.jwt;
 
+import com.uca.parcialfinalncapas.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
@@ -46,7 +46,6 @@ public class JwtTokenProvider {
                 .getBody();
         return claims.getSubject();
     }
-
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token);
